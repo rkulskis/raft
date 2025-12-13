@@ -2,14 +2,18 @@
 #+TITLE: Raft
 
 * Overview
-[[https://raft.github.io/][Raft]] is a consensus algorithm. Each server is a process. We use
-[[https://www.cl.cam.ac.uk/~mrd45/dtp2013-slides.pdf][asynchronous four slot buffers]] over shared memory for message
-communication. We have a CLI parser which takes in arguments or a
-~config.json~ which can configure:
+[[https://raft.github.io/][Raft]] is a consensus algorithm. This version of raft uses ROS 2 and the
+same functional methodology as RT-DDS (will link paper when
+published). See the image below for how the servers are composed in a
+pub-sub manner so that individual logic is handled at the marshall
+layer. 
+
+[[file:raft.svg]]
+
+We have a CLI parser which takes in arguments or a ~config.json~ which
+can configure:
  * ~num_servers: int~
  * ~scheduled_downtime: list[(server_index, start_ms, end_ms)]~
  * ~scheduled_partition: list[(Set_A, set_B, ..., start_ms, end_ms)]~
  * ~writes: list[(int, time_ms)]~ for when the user writes a value
    change to the raft
-
-   
