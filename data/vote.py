@@ -9,4 +9,5 @@ class RequestVote:
 
 @dataclass    
 class RespondVote:
+    term: int
     vote_granted: bool

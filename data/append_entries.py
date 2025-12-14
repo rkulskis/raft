@@ -11,4 +11,5 @@ class RequestAppendEntries:
 
 @dataclass    
 class RespondAppendEntries:
-    ok: bool
+    term: int
+    success: bool
