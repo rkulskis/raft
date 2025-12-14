@@ -19,7 +19,7 @@ ctree .                         # custom command
 #+RESULTS:
 #+begin_src bash
 .
-├── comm/ # handle transfer or data
+├── communication/ # handle transfer or data
 ├── data/ # e.g. RPC messages
 ├── functions/
 │   ├── n-ary/ # i.e. if forall X, then do Y
