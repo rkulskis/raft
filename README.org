@@ -1,4 +1,4 @@
-#+OPTIONS: toc:nil num: nil 
+#+OPTIONS: toc:nil num: nil
 #+TITLE: Raft
 
 * Overview
@@ -11,27 +11,29 @@ layer.
 [[file:raft.svg]]
 
 * Structure
-#+begin_src bash :exports results
+#+begin_src bash :exports results :results output raw :wrap example
 source ~/.bashrc
 ctree .                         # custom command
 #+end_src
 
 #+RESULTS:
-| .   |             |            |          |
-| ├── | comm        |            |          |
-| ├── | data        |            |          |
-| ├── | functions   |            |          |
-| │   | ├──         | n-ary      |          |
-| │   | └──         | unary      |          |
-| │   | ├──         | marshall   |          |
-| │   | │           | ├──        | request  |
-| │   | │           | └──        | response |
-| │   | └──         | unmarshall |          |
-| │   | ├──         | request    |          |
-| │   | └──         | response   |          |
-| └── | state       |            |          |
-|     |             |            |          |
-| 13  | directories |            |          |
+#+begin_example
+.
+├── comm
+├── data
+├── functions
+│   ├── n-ary
+│   └── unary
+│       ├── marshall
+│       │   ├── request
+│       │   └── response
+│       └── unmarshall
+│           ├── request
+│           └── response
+└── state
+
+13 directories
+#+end_example
 
 This repo also has a CLI parser which takes in arguments or a
 ~config.json~ which can configure:
