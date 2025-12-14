@@ -19,22 +19,22 @@ ctree .                         # custom command
 #+RESULTS:
 #+begin_src bash
 .
-├── comm # handle transfer or data
-├── data # e.g. RPC messages
-├── functions
-│   ├── n-ary # atomic logic
+├── comm/ # handle transfer or data
+├── data/ # e.g. RPC messages
+├── functions/
+│   ├── n-ary/ # atomic logic
 │   │   ├── _candidate.py
 │   │   ├── _follower.py
 │   │   ├── _leader.py
 │   │   └── server.py
-│   └── unary # for handling messages
-│       ├── marshall # outgoing
-│       │   ├── request
-│       │   └── response
-│       └── unmarshall # incoming
-│           ├── request
-│           └── response
-└── state # server state
+│   └── unary/ # for handling messages
+│       ├── marshall/ # outgoing
+│       │   ├── request/
+│       │   └── response/
+│       └── unmarshall/ # incoming
+│           ├── request/
+│           └── response/
+└── state/ # server state
     ├── persistent.py
     └── volatile.py
 #+end_src
