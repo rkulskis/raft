@@ -11,29 +11,33 @@ layer.
 [[file:raft.svg]]
 
 * Structure
-#+begin_src bash :exports results :results output raw :wrap example
+#+begin_src bash :exports results :results output raw :wrap src bash
 source ~/.bashrc
 ctree .                         # custom command
 #+end_src
 
 #+RESULTS:
-#+begin_example
+#+begin_src bash
 .
-├── comm
-├── data
+├── comm # handle transfer or data
+├── data # e.g. RPC messages
 ├── functions
-│   ├── n-ary
-│   └── unary
-│       ├── marshall
-│       │   ├── request
-│       │   └── response
-│       └── unmarshall
-│           ├── request
-│           └── response
-└── state
-
-13 directories
-#+end_example
+│   ├── n-ary # atomic logic
+│   │   ├── _candidate.py
+│   │   ├── _follower.py
+│   │   ├── _leader.py
+│   │   └── server.py
+│   └── unary # for handling messages
+│       ├── marshall # outgoing
+│       │   ├── request
+│       │   └── response
+│       └── unmarshall # incoming
+│           ├── request
+│           └── response
+└── state # server state
+    ├── persistent.py
+    └── volatile.py
+#+end_src
 
 This repo also has a CLI parser which takes in arguments or a
 ~config.json~ which can configure:
