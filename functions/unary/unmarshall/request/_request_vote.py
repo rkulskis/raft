@@ -12,10 +12,13 @@ def request_vote(self, request: RequestVote) -> RespondVote:
     if (self.voted_for is None or self.voted_for == request.candidate_id) and \
        request.last_log_index == self.last_log_index and \
        request.last_log_term == self.last_log_term:
+        self.voted_for = request.candidate_id
+        
         vote_granted = RespondVote(
             term=request.term
             vote_granted=True
         )
+        
         return vote_granted
 
     return vote_denied

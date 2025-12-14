@@ -22,12 +22,12 @@ ctree .                         # custom command
 ├── comm/ # handle transfer or data
 ├── data/ # e.g. RPC messages
 ├── functions/
-│   ├── n-ary/ # atomic logic
+│   ├── n-ary/ # i.e. if forall X, then do Y
 │   │   ├── _candidate.py
 │   │   ├── _follower.py
 │   │   ├── _leader.py
 │   │   └── server.py
-│   └── unary/ # for handling messages
+│   └── unary/ # for handling messages, may have @read_only decorator
 │       ├── marshall/ # outgoing
 │       │   ├── request/
 │       │   └── response/
