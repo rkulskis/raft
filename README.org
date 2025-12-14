@@ -1,4 +1,4 @@
-#+OPTIONS: toc:nil num: nil
+#+OPTIONS: toc:nil num: nil 
 #+TITLE: Raft
 
 * Overview
@@ -6,15 +6,32 @@
 same functional methodology as RT-DDS (will link paper when
 published). See the image below for how the servers are composed in a
 pub-sub manner so that individual logic is handled at the marshall
-layer. Each server performs the following steps:
- 1. Gather all inputs.
- 2. Given our state atomic function: ~follower~, ~candidate~, or ~leader~.
- 3. Publish a pointer to our state, which we then take as input and
-    perform the correct marshall function for that subscriber
-    corresponding to the same input. e.g. followers require different
-    ~AppendEntries()~ calls based on their progress.
+layer.
 
 [[file:raft.svg]]
+
+* Structure
+#+begin_src bash :exports results
+source ~/.bashrc
+ctree .                         # custom command
+#+end_src
+
+#+RESULTS:
+| .   |             |            |          |
+| ├── | comm        |            |          |
+| ├── | data        |            |          |
+| ├── | functions   |            |          |
+| │   | ├──         | n-ary      |          |
+| │   | └──         | unary      |          |
+| │   | ├──         | marshall   |          |
+| │   | │           | ├──        | request  |
+| │   | │           | └──        | response |
+| │   | └──         | unmarshall |          |
+| │   | ├──         | request    |          |
+| │   | └──         | response   |          |
+| └── | state       |            |          |
+|     |             |            |          |
+| 13  | directories |            |          |
 
 This repo also has a CLI parser which takes in arguments or a
 ~config.json~ which can configure:
