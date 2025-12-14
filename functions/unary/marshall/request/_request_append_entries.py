@@ -1,6 +1,5 @@
 from data.append_entries import RequestAppendEntries
 
-@read_only
 def request_append_entries(self, recipient_id) -> RequestAppendEntries:
     prev_log_index = self.volatile_leader.next_index[recipient_id] - 1
     # need to handle heartbeat too

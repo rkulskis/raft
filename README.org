@@ -27,7 +27,7 @@ ctree .                         # custom command
 │   │   ├── _follower.py
 │   │   ├── _leader.py
 │   │   └── server.py
-│   └── unary/ # for handling messages, may have @read_only decorator
+│   └── unary/ # for handling messages
 │       ├── marshall/ # outgoing
 │       │   ├── request/
 │       │   └── response/
