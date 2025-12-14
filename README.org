@@ -6,14 +6,21 @@
 same functional methodology as RT-DDS (will link paper when
 published). See the image below for how the servers are composed in a
 pub-sub manner so that individual logic is handled at the marshall
-layer. 
+layer. Each server performs the following steps:
+ 1. Gather all inputs.
+ 2. Given our state atomic function: ~follower~, ~candidate~, or ~leader~.
+ 3. Publish a pointer to our state, which we then take as input and
+    perform the correct marshall function for that subscriber
+    corresponding to the same input. e.g. followers require different
+    ~AppendEntries()~ calls based on their progress.
 
 [[file:raft.svg]]
 
-We have a CLI parser which takes in arguments or a ~config.json~ which
-can configure:
+This repo also has a CLI parser which takes in arguments or a
+~config.json~ which can configure:
  * ~num_servers: int~
  * ~scheduled_downtime: list[(server_index, start_ms, end_ms)]~
+ * ~scheduled_config_change: list[(change, time)]~
  * ~scheduled_partition: list[(Set_A, set_B, ..., start_ms, end_ms)]~
- * ~writes: list[(int, time_ms)]~ for when the user writes a value
+ * ~writes: list[(int, time_ms)]~ for when the client writes a value
    change to the raft
