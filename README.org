@@ -55,7 +55,7 @@ following logic:
 for input in inputs:
     common_unmarshall(input)    # Check term, update self.term if <
     if input is response:
-        unmarshall_parse(response, state)
+        unmarshall_response(response, state)
 
 # Stage 2: n-ary        
 n_ary = [follower, candidate, leader]
@@ -73,7 +73,7 @@ if converted:
 for subscriber, corresponding_input in zip(subscribers, inputs)
     # Ok to ignore request if e.g. new leader sending append entries to old leader
     if corresponding_input is request and should_respond(state, corresponing_input):
-        unmarshall_respond(request, state)
+        unmarshall_request(request, state)
     else:
         if timeout_allows:
             marshall_request(subscriber, state)
