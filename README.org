@@ -35,10 +35,12 @@ ctree .                         # custom command
 │       │   └── response/
 │       └── unmarshall/ # incoming
 │           ├── request/
-│           │   ├── _client_cmd.py
-│           │   ├── _request_append_entries.py
-│           │   └── _request_vote.py
+│           │   ├── append_entries.py
+│           │   ├── client_cmd.py
+│           │   └── vote.py
 │           └── response/
+│               ├── append_entries.py
+│               └── vote.py
 └── state/ # server state
     ├── persistent.py
     └── volatile.py
