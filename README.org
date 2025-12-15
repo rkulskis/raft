@@ -75,7 +75,7 @@ for subscriber, corresponding_input in zip(subscribers, inputs)
     if corresponding_input is request and should_respond(state, corresponing_input):
         unmarshall_request(request, state)
     else:
-        if timeout_allows:
+        if timeout_allows:      # i.e. election_timeout, heartbeat_timeout
             marshall_request(subscriber, state)
 #+end_src
 
