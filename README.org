@@ -2,6 +2,7 @@
 #+TITLE: Raft
 
 * Overview
+
 [[https://raft.github.io/][Raft]] is a consensus algorithm. This version of raft uses ROS 2 and the
 same functional methodology as RT-DDS (will link paper when
 published). See the image below for how the servers are composed in a
@@ -11,6 +12,7 @@ layer.
 [[file:raft.svg]]
 
 * Structure
+
 #+begin_src bash :exports results :results output raw :wrap src bash
 source ~/.bashrc
 ctree .                         # custom command
@@ -41,6 +43,40 @@ ctree .                         # custom command
     ├── persistent.py
     └── volatile.py
 #+end_src
+
+* Pseudocode
+
+Given the clear decomposition of functions (unary and n-ary), state,
+data, and communication logic, each raft server operates with the
+following logic:
+
+#+begin_src python
+for input in inputs:
+    common_unmarshall(input)    # Check term, update self.term if <
+    if input is response:
+        unmarshall_parse(response, state)
+
+n_ary = [follower, candidate, leader]
+
+before = state.status
+n_ary[before](state)
+after = state.status
+
+converted = (before != after)
+
+if converted:
+    n_ary[after](state)
+
+for subscriber, corresponding_input in zip(subscribers, inputs)
+    # Ok to ignore request if e.g. new leader sending append entries to old leader
+    if corresponding_input is request and should_respond(state, corresponing_input):
+        unmarshall_respond(request, state)
+    else:
+        if timeout_allows:
+            marshall_request(subscriber, state)
+#+end_src
+
+* Tests
 
 This repo also has a CLI parser which takes in arguments or a
 ~config.json~ which can configure:
