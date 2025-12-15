@@ -23,6 +23,8 @@ ctree .                         # custom command
 .
 ├── communication/ # handle transfer or data
 ├── data/ # e.g. RPC messages
+│   ├── request/
+│   └── response/
 ├── functions/
 │   ├── n-ary/ # i.e. if forall X, then do Y
 │   │   ├── _candidate.py

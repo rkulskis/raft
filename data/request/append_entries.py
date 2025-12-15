@@ -8,8 +8,3 @@ class RequestAppendEntries:
     prev_log_term: int
     entries: list[int]
     leader_commit: int
-
-@dataclass    
-class RespondAppendEntries:
-    term: int
-    success: bool

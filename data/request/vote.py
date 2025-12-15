@@ -6,8 +6,3 @@ class RequestVote:
     candidate_id: int
     last_log_index: int
     last_log_term: int
-
-@dataclass    
-class RespondVote:
-    term: int
-    vote_granted: bool
