@@ -51,11 +51,13 @@ data, and communication logic, each raft server operates with the
 following logic:
 
 #+begin_src python
+# Stage 1: unary unmarshall inputs
 for input in inputs:
     common_unmarshall(input)    # Check term, update self.term if <
     if input is response:
         unmarshall_parse(response, state)
 
+# Stage 2: n-ary        
 n_ary = [follower, candidate, leader]
 
 before = state.status
@@ -67,6 +69,7 @@ converted = (before != after)
 if converted:
     n_ary[after](state)
 
+# Stage 3: unary marshall subscribers (request or execute respond from their input)    
 for subscriber, corresponding_input in zip(subscribers, inputs)
     # Ok to ignore request if e.g. new leader sending append entries to old leader
     if corresponding_input is request and should_respond(state, corresponing_input):
