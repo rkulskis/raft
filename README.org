@@ -56,9 +56,9 @@ following logic:
 
 #+begin_src python
 # Stage 1: unary unmarshall inputs
-for input in inputs:
-    common_unmarshall(input)    # Check term, update self.term if <
-    if input is response:
+for _input in inputs:
+    common_unmarshall(_input)    # Check term, update self.term if <
+    if _input is response:
         unmarshall_response(response, state)
 
 # Stage 2: n-ary        
