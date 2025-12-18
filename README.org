@@ -3,15 +3,47 @@
 
 * Overview
 
-[[https://raft.github.io/][Raft]] is a consensus algorithm. This version of raft uses ROS 2 and the
-same functional methodology as RT-DDS (will link paper when
-published). See the image below for how the servers are composed in a
-pub-sub manner so that individual logic is handled at the marshall
-layer.
+[[https://raft.github.io/][Raft]] is a consensus algorithm, which is a distributed state machine
+that provides consistency in operations across multiple
+nodes. Consensus algorithms provide fault tolerance by guaranteeing
+progress and consistency int he face of server failures so long as
+some condition is upheld. In the case of raft, this condition is that
+the majority of servers are online. E.g. so long as 3 of our 5 servers
+that comprise the Raft stay online, we can still progress.
+
+Each Raft server has 3 states:
+ 1. *Follower*: accept commands from leader.
+ 2. *Candidate*: run for election if no valid leader (from server POV).
+ 3. *Leader*: relay commands from user to rest of servers.
+
+Raft primaryily uses the ~AppendEntries()~ and ~RequestVote()~ Remote
+Procedural Calls (RPCs - a fancy word for a function call that runs on
+another server). Because of the intricate and interwoven logic of
+state, most raft implementations use sempahores or locking. However,
+this implementation is fully asynchronous and requires no
+locks.
+
+This version of raft uses ROS 2 and the same functional methodology as
+RT-DDS (will link paper when published). See the image below for how
+the servers are composed in a pub-sub manner so that much of the
+individual logic of e.g. responding to an RPC is handled at the
+unary unmarshall/marshall layer.
 
 [[file:raft.svg]]
 
 * Structure
+
+The function space is partitioned by arity into two groups:
+ 1. *unary*: takes one input
+ 2. *n-ary*: takes more than one input
+
+Each function may have state associated with it, which is encapsulated
+in the class for simplicity and to code in a Object-Oriented manner
+since this is a Python implementation.
+
+All data, which flows through the pub/sub graph, and state lives in
+separate files from our functions. This significantly decreases lines
+of code and allows for a more scalable design.
 
 #+begin_src bash :exports results :results output raw :wrap src bash
 source ~/.bashrc
@@ -52,7 +84,7 @@ ctree .                         # custom command
 
 Given the clear decomposition of functions (unary and n-ary), state,
 data, and communication logic, each raft server operates with the
-following logic:
+(pseudo-code) following logic:
 
 #+begin_src python
 # Stage 1: unary unmarshall inputs
