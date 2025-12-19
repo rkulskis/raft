@@ -105,6 +105,7 @@ converted = (before != after)
 if converted:
     n_ary[after](state)
 
+    
 # Stage 3: unary marshall subscribers (request or execute respond from their input)    
 for subscriber, corresponding_input in zip(subscribers, inputs)
     # Ok to ignore request if e.g. new leader sending append entries to old leader
