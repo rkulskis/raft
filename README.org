@@ -3,8 +3,12 @@
 #+HTML_HEAD: <script>
 #+HTML_HEAD: document.addEventListener("DOMContentLoaded", function () {
 #+HTML_HEAD:   const ansi_up = new AnsiUp();
+#+HTML_HEAD:   const ansi_re = /\x1b\[[0-9;]*m/;
+#+HTML_HEAD:
 #+HTML_HEAD:   document.querySelectorAll("pre").forEach(pre => {
-#+HTML_HEAD:     pre.innerHTML = ansi_up.ansi_to_html(pre.textContent);
+#+HTML_HEAD:     if (ansi_re.test(pre.textContent)) {
+#+HTML_HEAD:       pre.innerHTML = ansi_up.ansi_to_html(pre.textContent);
+#+HTML_HEAD:     }
 #+HTML_HEAD:   });
 #+HTML_HEAD: });
 #+HTML_HEAD: </script>
@@ -56,27 +60,31 @@ All data, which flows through the pub/sub graph, and state lives in
 separate files from our functions. This significantly decreases lines
 of code and allows for a more scalable design.
 
-#+begin_src bash :exports results :results output ansi :wrap src bash
+#+begin_src bash :exports results :results output ansi :wrap example
 source ~/.bashrc
 ctree . 
 #+end_src
 
+<pre>
+this is a pre
+</pre>
+
 #+RESULTS:
-#+begin_src bash
+#+begin_example
 [1;34m.[0m
-├── [1;34mcommunication/[0m # handle transfer or data
+├── [1;34mcommunication/[0m [0;31m# handle transfer or data[0m
 ├── [1;34mdata/[0m
 │   ├── append_entries_req.py
 │   ├── append_entries_resp.py
 │   ├── vote_req.py
 │   └── vote_resp.py
 ├── [1;34mfunctions/[0m
-│   ├── [1;34mn-ary/[0m # i.e. if forall X, then do Y
+│   ├── [1;34mn-ary/[0m [0;31m# i.e. if forall X, then do Y[0m
 │   │   ├── _candidate.py
 │   │   ├── _follower.py
 │   │   ├── _leader.py
 │   │   └── server.py
-│   └── [1;34munary/[0m # for handling messages
+│   └── [1;34munary/[0m [0;31m# for handling messages[0m
 │       ├── append_entries_req.py
 │       ├── append_entries_req_resp.py
 │       ├── append_entries_resp_recv.py
@@ -90,10 +98,10 @@ ctree .
 │       ├── vote_req.py
 │       ├── vote_req_resp.py
 │       └── vote_resp_recv.py
-└── [1;34mstate/[0m # server state
+└── [1;34mstate/[0m [0;31m# server state[0m
     ├── persistent.py
     └── volatile.py
-#+end_src
+#+end_example
 
 * Pseudocode
 
