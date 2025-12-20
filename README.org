@@ -1,3 +1,14 @@
+#+HTML_HEAD: <script src="https://cdn.jsdelivr.net/npm/ansi_up@5.1.0/ansi_up.min.js"></script>
+
+#+HTML_HEAD: <script>
+#+HTML_HEAD: document.addEventListener("DOMContentLoaded", function () {
+#+HTML_HEAD:   const ansi_up = new AnsiUp();
+#+HTML_HEAD:   document.querySelectorAll("pre").forEach(pre => {
+#+HTML_HEAD:     pre.innerHTML = ansi_up.ansi_to_html(pre.textContent);
+#+HTML_HEAD:   });
+#+HTML_HEAD: });
+#+HTML_HEAD: </script>
+
 #+OPTIONS: toc:nil num: nil
 #+TITLE: Raft
 
@@ -45,27 +56,27 @@ All data, which flows through the pub/sub graph, and state lives in
 separate files from our functions. This significantly decreases lines
 of code and allows for a more scalable design.
 
-#+begin_src bash :exports results :results output raw :wrap src bash
+#+begin_src bash :exports results :results output ansi :wrap src bash
 source ~/.bashrc
-ctree .                         # custom command
+ctree . 
 #+end_src
 
 #+RESULTS:
 #+begin_src bash
-.
-├── communication/ # handle transfer or data
-├── data/
+[1;34m.[0m
+├── [1;34mcommunication/[0m # handle transfer or data
+├── [1;34mdata/[0m
 │   ├── append_entries_req.py
 │   ├── append_entries_resp.py
 │   ├── vote_req.py
 │   └── vote_resp.py
-├── functions/
-│   ├── n-ary/ # i.e. if forall X, then do Y
+├── [1;34mfunctions/[0m
+│   ├── [1;34mn-ary/[0m # i.e. if forall X, then do Y
 │   │   ├── _candidate.py
 │   │   ├── _follower.py
 │   │   ├── _leader.py
 │   │   └── server.py
-│   └── unary/ # for handling messages
+│   └── [1;34munary/[0m # for handling messages
 │       ├── append_entries_req.py
 │       ├── append_entries_req_resp.py
 │       ├── append_entries_resp_recv.py
@@ -79,7 +90,7 @@ ctree .                         # custom command
 │       ├── vote_req.py
 │       ├── vote_req_resp.py
 │       └── vote_resp_recv.py
-└── state/ # server state
+└── [1;34mstate/[0m # server state
     ├── persistent.py
     └── volatile.py
 #+end_src
