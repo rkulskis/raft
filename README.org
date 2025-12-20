@@ -54,9 +54,11 @@ ctree .                         # custom command
 #+begin_src bash
 .
 ├── communication/ # handle transfer or data
-├── data/ # e.g. RPC messages
-│   ├── request/
-│   └── response/
+├── data/
+│   ├── append_entries_req.py
+│   ├── append_entries_resp.py
+│   ├── vote_req.py
+│   └── vote_resp.py
 ├── functions/
 │   ├── n-ary/ # i.e. if forall X, then do Y
 │   │   ├── _candidate.py
@@ -64,17 +66,19 @@ ctree .                         # custom command
 │   │   ├── _leader.py
 │   │   └── server.py
 │   └── unary/ # for handling messages
-│       ├── marshall/ # outgoing
-│       │   ├── request/
-│       │   └── response/
-│       └── unmarshall/ # incoming
-│           ├── request/
-│           │   ├── append_entries.py
-│           │   ├── client_cmd.py
-│           │   └── vote.py
-│           └── response/
-│               ├── append_entries.py
-│               └── vote.py
+│       ├── append_entries_req.py
+│       ├── append_entries_req_resp.py
+│       ├── append_entries_resp_recv.py
+│       ├── client_cmd_req.py
+│       ├── client_cmd_req_recv.py
+│       ├── client_cmd_resp.py
+│       ├── client_cmd_resp_recv.py
+│       ├── recv.py
+│       ├── req_resp.py
+│       ├── send.py
+│       ├── vote_req.py
+│       ├── vote_req_resp.py
+│       └── vote_resp_recv.py
 └── state/ # server state
     ├── persistent.py
     └── volatile.py
