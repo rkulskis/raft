@@ -1,4 +1,3 @@
-#+OPTIONS: toc:nil num: nil
 #+TITLE: Raft
 
 * Overview
@@ -79,19 +78,9 @@ ctree . --color=implicit
 │       ├── vote_req.py       
 │       ├── vote_req_resp.py       
 │       └── vote_resp_recv.py       
-├── state/ # server state
-│   ├── persistent.py       
-│   └── volatile.py       
-└── test/
-    ├── directory/
-    ├── symlink -> regular_file 
-    ├── unix_socket  
-    ├── fifo   
-    ├── block_device    
-    ├── char_device     
-    ├── all_files.sh      
-    ├── hardlink       
-    └── regular_file       
+└── state/ # server state
+    ├── persistent.py       
+    └── volatile.py       
 #+end_src
 
 * Pseudocode
