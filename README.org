@@ -60,14 +60,14 @@ All data, which flows through the pub/sub graph, and state lives in
 separate files from our functions. This significantly decreases lines
 of code and allows for a more scalable design.
 
+#+begin_export md
+<span style="color:red">this is red</span>
+#+end_export
+
 #+begin_src bash :exports results :results output ansi :wrap example
 source ~/.bashrc
 ctree . 
 #+end_src
-
-<pre>
-this is a pre
-</pre>
 
 #+RESULTS:
 #+begin_example
