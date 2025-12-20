@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
 @dataclass    
-class RespondVote:
+class VoteResp:
     term: int
     vote_granted: bool

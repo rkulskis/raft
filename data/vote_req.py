@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class RequestVote:
+class VoteReq:
     term: int
     candidate_id: int
     last_log_index: int

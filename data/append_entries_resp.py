@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
 @dataclass    
-class RespondAppendEntries:
+class AppendEntriesResp:
     term: int
     success: bool

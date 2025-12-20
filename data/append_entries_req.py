@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class RequestAppendEntries:
+class AppendEntriesReq:
     term: int
     leader_id: int
     prev_log_index: int

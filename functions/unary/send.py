@@ -1,13 +1,8 @@
-from ._client_cmd import _client_cmd
-from ._request_append_entries import _request_append_entries
-from ._request_vote import _request_vote
+# Internal API
+from .append_entries_req import append_entries_req
+from .vote_req import vote_req
 
-def server(self, data, recipient_id):
-    match type(data):
-        case ClientCmd:
-            self._client_cmd(data)
-        case RequestAppendEntries:
-            self._request_append_entries(data, recipient_id)
-        case RequestVote:
-            self._request_vote(data)
-            
+# External API
+from .client_cmd_resp import client_cmd_resp
+
+def send(self, data, recipient_id):

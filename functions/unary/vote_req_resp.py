@@ -1,9 +1,10 @@
-from data.request_vote import RequestVote, RespondVote
+from data.vote_req import VoteReq
+from data.vote_resp import VoteResp
 
-def request_vote(self, request: RequestVote) -> RespondVote:
-    vote_denied = RespondVote(
-        term=self.persistent.current_term,
-        vote_granted=False
+def request_vote(self, request: VoteReq) -> VoteResp:
+    vote_denied = VoteResp(
+        term = self.persistent.current_term,
+        vote_granted = False
     )
     
     if request.term < self.persistent.current_term:
@@ -14,9 +15,9 @@ def request_vote(self, request: RequestVote) -> RespondVote:
        request.last_log_term == self.last_log_term:
         self.voted_for = request.candidate_id
         
-        vote_granted = RespondVote(
-            term=request.term
-            vote_granted=True
+        vote_granted = VoteResp(
+            term = request.term
+            vote_granted = True
         )
         
         return vote_granted

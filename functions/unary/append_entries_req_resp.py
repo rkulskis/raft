@@ -1,8 +1,9 @@
-from data.append_entries import RequestAppendEntries, RespondAppendEntries
+from data.append_entries_req import AppendEntriesReq
+from data.append_entries_resp import AppendEntriesResp
 
-def request_append_entries(self,
-                           request: RequestAppendEntries) -> RespondAppendEntries:
-    fail = AppendEntriesResponse(
+def append_entries_req_resp(self,
+                            request: AppendEntriesReq) -> AppendEntriesResp:
+    fail = AppendEntriesResp(
         term = self.persistent.current_term,
         success = False
     )
@@ -15,7 +16,7 @@ def request_append_entries(self,
         return fail
 
     # We now know the request is valid.
-    success = AppendEntriesResponse(
+    success = AppendEntriesResp(
         term = self.persistent.current_term,
         success = True
     )

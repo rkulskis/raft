@@ -1,8 +1,8 @@
-from data.append_entries import RespondAppendEntries
+from data.append_entries_resp import AppendEntriesResp
 
-def respond_append_entries(self,
-                           response: RespondAppendEntries,
-                           input_id: int) -> None:
+def append_entries_resp_recv(self,
+                             response: AppendEntriesResp,
+                             input_id: int) -> None:
     if response.success:
         self.volatile_leader.next_index[input_id] = len(log)
         self.volatile_leader.match_index[input_id] = len(log)
