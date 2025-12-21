@@ -27,12 +27,12 @@ class RaftServer(Node):
         half_heartbeat_timeout = 50e-3
         self.timer_raft = self.create_timer(half_heartbeat_timeout, self.loop)
         
-        self.state = RaftServerState(self.id)
+        self.state = RaftServerState(id=self.id)
 
     def input_callback(self, msg, topic_name):
         id = int(re.search(r"\d+", topic_name).group())
 
-        data = pickle.loads(bytes(msg.data))[self.id]
+        data = pickle.loads(msg.data)[self.id]
 
         if id not in self.input_bufs:
             self.input_bufs[id] = FourSlot()
@@ -71,28 +71,48 @@ class RaftServer(Node):
 
         out_msgs = {}
         
-        for id, in_msg in self.in_msgs.items():
+        for id, in_msg in in_msgs.items():
             out_msg = self.state.send(in_msg, id)
             out_msgs[id] = out_msg
 
         # Batch as one message, then subscribers filter by their id
         msg = ByteMultiArray()
-        msg.data = list(pickle.dumps(out_msgs))
+        msg.data = pickle.dumps(out_msgs)
+        print(f"msg.data={msg.data}")
         self.publisher.publish(msg)
 
-def main():
+import multiprocessing
+
+def run_raft_server():
+    """Run a single RaftServer instance"""
     rclpy.init()
-
     raft_server = RaftServer()
+    try:
+        rclpy.spin(raft_server)
+    finally:
+        raft_server.destroy_node()
+        rclpy.shutdown()
 
-    rclpy.spin(raft_server)
-
-    # Destroy the node explicitly
-    # (optional - otherwise it will be done automatically
-    # when the garbage collector destroys the node object)
-    raft_server.destroy_node()
-    rclpy.shutdown()
-
+def main():
+    num_servers = 5
+    processes = []
+    
+    for i in range(num_servers):
+        p = multiprocessing.Process(target=run_raft_server)
+        p.start()
+        processes.append(p)
+        print(f"Started RaftServer process {i+1}/{num_servers} (PID: {p.pid})")
+    
+    # Wait for all processes to complete (or Ctrl+C)
+    try:
+        for p in processes:
+            p.join()
+    except KeyboardInterrupt:
+        print("\nShutting down all RaftServers...")
+        for p in processes:
+            p.terminate()
+        for p in processes:
+            p.join()
 
 if __name__ == '__main__':
     main()

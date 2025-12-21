@@ -1,7 +1,7 @@
 from data.vote_req import VoteReq
 from data.vote_resp import VoteResp
 
-def request_vote(self, request: VoteReq) -> VoteResp:
+def vote_req_resp(self, request: VoteReq) -> VoteResp:
     vote_denied = VoteResp(
         term = self.persistent.current_term,
         vote_granted = False
@@ -16,7 +16,7 @@ def request_vote(self, request: VoteReq) -> VoteResp:
         self.voted_for = request.candidate_id
         
         vote_granted = VoteResp(
-            term = request.term
+            term = request.term,
             vote_granted = True
         )
         

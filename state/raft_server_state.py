@@ -4,26 +4,32 @@ from state.volatile import Volatile, VolatileLeader
 from state.timer import Timer
 from state.state_machine import StateMachine
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable
 
 @dataclass
 class RaftServerState:
+    id: int
+    
     # From paper
-    persistent: Persistent    
-    volatile: Volatile
-    volatile_leader: VolatileLeader
+    persistent: Persistent = field(default_factory=Persistent)
+    volatile: Volatile = field(default_factory=Volatile)
+    volatile_leader: VolatileLeader = field(default_factory=VolatileLeader)
 
     # Implicit from paper - initialized by calling process
-    id: int
-    raft_cardinality: int      # i.e. num servers in raft    
+    raft_cardinality: int = 0      # i.e. num servers in raft    
     
     # Other implicit from paper
-    state_machine: StateMachine
-    election_timer: Timer
-    heartbeat_timers: dict[int, Timer] # leader has one for each peer (id)
+    state_machine: StateMachine = field(default_factory=StateMachine)
+    election_timeout: Timer = field(
+        default_factory=lambda: Timer(time_s = 5 * 100e-3)
+    )
+    heartbeat_timers: dict[int, Timer] = field(
+        default_factory=lambda: Timer(time_s = 100e-3)
+    ) # leader has one for each peer (id)
 
-    voted_for: int
+    voted_for: int = 0
+    _votes_granted: int = 0
 
     # Implementation-specific
     # unary
@@ -50,7 +56,11 @@ class RaftServerState:
     from functions.n_ary._leader import _leader
     from functions.n_ary.server import server
     
-    _handle: Callable[[], None] = field(default=self._follower)
+    _handle: Callable[[], None] = field(init=False)
+
+    def __post_init__(self):
+        # Bind the initial handler after instance is created
+        self._handle = self._follower
 
     # Helpers
     def _majority(self):

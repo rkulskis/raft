@@ -1,5 +1,6 @@
 # For all servers, c.f. P4/18 "Rules for Servers" -> "All Servers"
 def server(self):
+    _prior_handle = self._handle
     self._handle()
 
     converted = (_prior_handle != self._handle)
@@ -14,5 +15,3 @@ def server(self):
         self.state_machine.apply(
             self.persistent.log[self.volatile.last_applied]
         )
-
-    return msg

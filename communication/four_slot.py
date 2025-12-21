@@ -15,8 +15,8 @@ class FourSlot:
     )
 
     def write(self, value: Any) -> None:
-        pair = 1 - self.latest           # switch pair
-        index = 1 - self.slot[pair]      # switch slot
+        pair = not self.latest     
+        index = not self.slot[pair]
 
         self.data[pair][index] = value
         self.slot[pair] = index
