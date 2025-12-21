@@ -6,3 +6,4 @@ from .vote_req import vote_req
 from .client_cmd_resp import client_cmd_resp
 
 def send(self, data, recipient_id):
+    return

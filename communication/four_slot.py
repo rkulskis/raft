@@ -1,38 +1,30 @@
-from multiprocessing import shared_memory
+from dataclasses import dataclass, field
+from typing import Any
 
-class FourSlotShared:
-    latest: int
-    reading: int
-    slot: int[2][2]
-
+@dataclass
 class FourSlot:
-    shm: SharedMemory
+    latest: int = 0
+    reading: int = 0
 
-def fourslot_write(data: int, _buf: FourSlot) -> int:
-    buf = _buf.buf
-    
-    pair = buf.latest
-    index = buf.slot[pair]
+    # which index (0 or 1) is current for each pair
+    slot: list[int] = field(default_factory=lambda: [0, 0])
 
-    buf.slot[pair][index] = data
-    buf.slot[pair] = index
-    buf.latest = pair
+    # actual storage: 2 pairs x 2 slots each
+    data: list[list[Any]] = field(
+        default_factory=lambda: [[None, None], [None, None]]
+    )
 
-    return 0
+    def write(self, value: Any) -> None:
+        pair = 1 - self.latest           # switch pair
+        index = 1 - self.slot[pair]      # switch slot
 
-def fourslot_read(_buf: FourSlot) -> int:
-    buf = _buf.buf
-    
-    pair = buf.latest
-    buf.reading = latest
-    index = buf.slot[pair]
+        self.data[pair][index] = value
+        self.slot[pair] = index
+        self.latest = pair
 
-    return buf.slot[pair][index]
+    def read(self) -> Any:
+        pair = self.latest
+        self.reading = pair
+        index = self.slot[pair]
 
-def new_fourslot(create=False, name: str) -> FourSlot:
-    return shared_memory.SharedMemory(create=create, size=FourSlotShared)
-    
-def del_fourslot(unlink=False, buf: FourSlot):
-    buf.close()
-    buf.unlink(unlink=unlink)
-    
+        return self.data[pair][index]

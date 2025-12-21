@@ -11,7 +11,7 @@ def append_entries_req(self, recipient_id) -> AppendEntriesReq:
         leader_id = self.persistent.id,
         prev_log_index = prev_log_index,
         prev_log_term = self.persistent.log[prev_log_index].term,
-        entries = entries
-        leader_commit = self.volatile.commit_index
+        entries = entries,
+        leader_commit = self.volatile.commit_index,
     )
     return request
