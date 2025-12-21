@@ -29,9 +29,7 @@ class RaftServer(Node):
         
         self.state = RaftServerState(id=self.id)
 
-    def input_callback(self, msg, topic_name):
-        id = int(re.search(r"\d+", topic_name).group())
-
+    def input_callback(self, msg, id):
         data_dict = pickle.loads(b''.join(msg.data))
         
         if self.id not in data_dict:
@@ -39,11 +37,7 @@ class RaftServer(Node):
         
         data = data_dict[self.id]
 
-        self.get_logger().info('Got: "%s"' % data)
-
-        if id not in self.input_bufs:
-            self.input_bufs[id] = FourSlot()
-            
+        print(f'Got: {data};\n self.state = {self.state}')
         self.input_bufs[id].write(data)
         
     def scan_topics(self):
@@ -57,10 +51,15 @@ class RaftServer(Node):
                 continue
 
             self.get_logger().info(f"Subscribing to {topic_name}")
+            
+            id = int(re.search(r"\d+", topic_name).group())
+            if id not in self.input_bufs:
+                self.input_bufs[id] = FourSlot()
+                
             sub = self.create_subscription(
                 ByteMultiArray,
                 topic_name,
-                lambda msg, t=topic_name: self.input_callback(msg, t),
+                lambda msg, id=id: self.input_callback(msg, id),
                 1
             )
 
@@ -70,13 +69,16 @@ class RaftServer(Node):
         in_msgs = {}
         for in_id, in_buf in list(self.input_bufs.items()):
             in_msgs[in_id] = in_buf.read()
+            if not in_msgs[in_id]:
+                continue
             self.state.recv(in_msgs[in_id], in_id)
 
         self.state.tick()
 
         out_msgs = {}
-        
+
         for id, in_msg in in_msgs.items():
+            print(f'Sending to {id}')
             out_msg = self.state.send(in_msg, id)
             out_msgs[id] = out_msg
 

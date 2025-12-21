@@ -12,4 +12,4 @@ def _candidate(self):
 
     # Handled implicitly in recv.py
     # if self._received_append_entries:
-        # convert to follower
+        # self._handle = self._follower

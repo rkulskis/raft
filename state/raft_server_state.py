@@ -20,6 +20,8 @@ class RaftServerState:
     raft_cardinality: int = 0      # i.e. num servers in raft    
     
     # Other implicit from paper
+    last_log_index: int = 0
+    last_log_term: int = 0
     state_machine: StateMachine = field(default_factory=StateMachine)
     election_timeout: Timer = field(
         default_factory=lambda: Timer(time_s = 5 * 100e-3)
@@ -35,7 +37,6 @@ class RaftServerState:
     # unary
     # Generic
     from functions.unary.recv import recv
-    from functions.unary.req_resp import req_resp
     from functions.unary.send import send
     
     # RPC-specific unary
