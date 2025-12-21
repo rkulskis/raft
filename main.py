@@ -37,7 +37,8 @@ class RaftServer(Node):
         
         data = data_dict[self.id]
 
-        print(f'Got: {data};\n self.state = {self.state}')
+        print(f'Got: {data}')
+        # print(f'self.state = {self.state}')
         self.input_bufs[id].write(data)
         
     def scan_topics(self):
@@ -78,13 +79,12 @@ class RaftServer(Node):
         out_msgs = {}
 
         for id, in_msg in in_msgs.items():
-            print(f'Sending to {id}')
             out_msg = self.state.send(in_msg, id)
+            print(f'Sent {out_msg} to {id}')            
             out_msgs[id] = out_msg
 
         # Batch as one message, then subscribers filter by their id
         msg = ByteMultiArray()
-        out_msgs[10] = 20
         serialized = pickle.dumps(out_msgs, protocol=pickle.HIGHEST_PROTOCOL)
         msg.data = serialized
         self.publisher.publish(msg)

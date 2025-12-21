@@ -8,6 +8,7 @@ def recv(self, msg, sender_id):
     if msg.term > self.persistent.current_term:
         self.persistent.current_term = msg.term
         self._handler = self._follower
+        
     match type(msg):
         case AppendEntriesResp():
             append_entries_resp_recv(msg, sender_id)
