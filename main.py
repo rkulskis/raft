@@ -32,7 +32,14 @@ class RaftServer(Node):
     def input_callback(self, msg, topic_name):
         id = int(re.search(r"\d+", topic_name).group())
 
-        data = pickle.loads(msg.data)[self.id]
+        data_dict = pickle.loads(b''.join(msg.data))
+        
+        if self.id not in data_dict:
+            return
+        
+        data = data_dict[self.id]
+
+        self.get_logger().info('Got: "%s"' % data)
 
         if id not in self.input_bufs:
             self.input_bufs[id] = FourSlot()
@@ -43,17 +50,15 @@ class RaftServer(Node):
         topics = self.get_topic_names_and_types()
 
         for topic_name, types in topics:
-            if not topic_name.startswith('RaftServer'):
+            if not topic_name.startswith('/RaftServer'):
                 continue
 
             if topic_name in self.inputs:
                 continue
 
-            msg_type = self.resolve_type(types[0])
             self.get_logger().info(f"Subscribing to {topic_name}")
-
             sub = self.create_subscription(
-                msg_type,
+                ByteMultiArray,
                 topic_name,
                 lambda msg, t=topic_name: self.input_callback(msg, t),
                 1
@@ -77,8 +82,9 @@ class RaftServer(Node):
 
         # Batch as one message, then subscribers filter by their id
         msg = ByteMultiArray()
-        msg.data = pickle.dumps(out_msgs)
-        print(f"msg.data={msg.data}")
+        out_msgs[10] = 20
+        serialized = pickle.dumps(out_msgs, protocol=pickle.HIGHEST_PROTOCOL)
+        msg.data = serialized
         self.publisher.publish(msg)
 
 import multiprocessing
