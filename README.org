@@ -94,7 +94,7 @@ data, and communication logic, each raft server operates with the
 for _input in inputs:
     common_unmarshall(_input)    # Check term, update self.term if <
     if _input is response:
-        unmarshall_response(response, state)
+        resp_recv(response, state)
 
 # Stage 2: n-ary        
 n_ary = [follower, candidate, leader]
@@ -113,10 +113,10 @@ if converted:
 for subscriber, corresponding_input in zip(subscribers, inputs)
     # Ok to ignore request if e.g. new leader sending append entries to old leader
     if corresponding_input is request and should_respond(state, corresponing_input):
-        unmarshall_request(request, state)
+        req_resp(request, state)
     else:
         if timeout_allows:      # i.e. election_timeout, heartbeat_timeout
-            marshall_request(subscriber, state)
+            req_send(subscriber, state)
 #+end_src
 
 * Tests

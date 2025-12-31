@@ -7,6 +7,8 @@ from state.state_machine import StateMachine
 from dataclasses import dataclass, field
 from typing import Callable
 
+CLIENT_ID = 0
+
 @dataclass
 class RaftServerState:
     id: int
@@ -44,8 +46,10 @@ class RaftServerState:
     from functions.unary.append_entries_req_resp import append_entries_req_resp
     from functions.unary.append_entries_resp_recv import append_entries_resp_recv
 
+    from functions.unary.client_cmd_req import client_cmd_req    
     from functions.unary.client_cmd_req_recv import client_cmd_req_recv
     from functions.unary.client_cmd_resp import client_cmd_resp
+    from functions.unary.client_cmd_resp_recv import client_cmd_resp_recv
 
     from functions.unary.vote_req import vote_req
     from functions.unary.vote_req_resp import vote_req_resp
@@ -56,6 +60,7 @@ class RaftServerState:
     from functions.n_ary._candidate import _candidate
     from functions.n_ary._leader import _leader
     from functions.n_ary.server import server
+    from functions.n_ary.client import client
     
     _handle: Callable[[], None] = field(init=False)
 
@@ -68,4 +73,7 @@ class RaftServerState:
         return int(self.raft_cardinality / 2) + 1
 
     def tick(self):
-        self.server()
+        if self.id == CLIENT_ID:
+            self.client()
+        else:
+            self.server()

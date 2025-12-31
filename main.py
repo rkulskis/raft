@@ -6,13 +6,14 @@ import pickle
 
 import re
 import random
+import argparse
 
 from communication.four_slot import FourSlot
-from state.raft_server_state import RaftServerState
+from state.raft_server_state import RaftServerState, CLIENT_ID
 
 class RaftServer(Node):
-    def __init__(self):
-        self.id = random.randint(1, 2 ** 31)
+    def __init__(self, is_client=False):
+        self.id = random.randint(1, 2 ** 31) if not is_client else CLIENT_ID
         node_name = f'RaftServer{self.id}'
         print(f"Creating {node_name}")
         super().__init__(node_name)
@@ -73,13 +74,17 @@ class RaftServer(Node):
         in_msgs = {}
         for in_id, in_buf in list(self.input_bufs.items()):
             in_msgs[in_id] = in_buf.read()
-            if not in_msgs[in_id]:
-                continue
-            if in_id not in self.state.volatile_leader.match_index:
+            if in_id not in self.state.volatile_leader.match_index and \
+               in_id != CLIENT_ID:
                 self.state.volatile_leader.match_index[in_id] = self.state.prev_log_index
                 self.state.volatile_leader.next_index[in_id] = self.state.prev_log_index
                 self.state.raft_cardinality += 1
-            print(f'{self.id} Got: {in_msgs[in_id]}')
+
+            if not in_msgs[in_id]:
+                continue
+
+            if self.id != CLIENT_ID:
+                print(f'{self.id} Got: {in_msgs[in_id]}')
             self.state.recv(in_msgs[in_id], in_id)
 
         self.state.tick()
@@ -88,7 +93,8 @@ class RaftServer(Node):
 
         for id, in_msg in in_msgs.items():
             out_msg = self.state.send(in_msg, id)
-            print(f'Sent {out_msg} to {id}')            
+            if out_msg is not None and self.id != CLIENT_ID:
+                print(f'Sent {out_msg} to {id}')            
             out_msgs[id] = out_msg
 
         # Batch as one message, then subscribers filter by their id
@@ -99,22 +105,23 @@ class RaftServer(Node):
 
 import multiprocessing
 
-def run_raft_server():
+def run_raft_server(is_client=False):
     """Run a single RaftServer instance"""
     rclpy.init()
-    raft_server = RaftServer()
+    raft_server = RaftServer(is_client)
     try:
         rclpy.spin(raft_server)
     finally:
         raft_server.destroy_node()
         rclpy.shutdown()
 
-def main():
-    num_servers = 5
+def main(is_client):
+    num_servers = 5 if not is_client else 1
     processes = []
     
     for i in range(num_servers):
-        p = multiprocessing.Process(target=run_raft_server)
+        kwargs = {'is_client': is_client} if i == 0 else {}
+        p = multiprocessing.Process(target=run_raft_server, kwargs=kwargs)
         p.start()
         processes.append(p)
         print(f"Started RaftServer process {i+1}/{num_servers} (PID: {p.pid})")
@@ -131,4 +138,12 @@ def main():
             p.join()
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--client',
+        action='store_true',
+        help='Run in client mode'
+    )
+    args = parser.parse_args()
+
+    main(is_client=args.client)

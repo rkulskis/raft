@@ -4,15 +4,27 @@ from .append_entries_resp_recv import append_entries_resp_recv
 from data.vote_resp import VoteResp
 from .vote_resp_recv import vote_resp_recv
 
+from data.client_cmd_req import ClientCmdReq
+from .client_cmd_req_recv import client_cmd_req_recv
+
+from data.client_cmd_resp import ClientCmdResp
+from .client_cmd_resp_recv import client_cmd_resp_recv
+
 def recv(self, msg, sender_id):
-    if msg.term > self.persistent.current_term:
+    if not isinstance(msg, (ClientCmdReq, ClientCmdResp)) and \
+       msg.term > self.persistent.current_term:
         self.persistent.current_term = msg.term
         self.voted_for = 0
         self._handler = self._follower
-    
+
     match msg:
         case AppendEntriesResp():
             self.append_entries_resp_recv(msg, sender_id)
         case VoteResp():
-            self.vote_resp_recv(msg)            
+            self.vote_resp_recv(msg)
+        case ClientCmdReq():
+            if self._handle == self._leader:
+                self.client_cmd_req_recv(msg)
+        case ClientCmdResp():
+            self.client_cmd_resp_recv(msg)
             
