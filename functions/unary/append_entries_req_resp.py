@@ -12,7 +12,7 @@ def append_entries_req_resp(self,
         return fail
 
     # 2. Or if my log entry at prev_log_index doesn't match theirs
-    if self.persistent.log[request.prev_log_index] != request.prev_log_term:
+    if self.persistent.log[request.prev_log_index].term != request.prev_log_term:
         return fail
 
     # We now know the request is valid.

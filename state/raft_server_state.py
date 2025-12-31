@@ -20,11 +20,11 @@ class RaftServerState:
     raft_cardinality: int = 0      # i.e. num servers in raft    
     
     # Other implicit from paper
-    last_log_index: int = 0
+    prev_log_index: int = 0
     last_log_term: int = 0
     state_machine: StateMachine = field(default_factory=StateMachine)
     election_timeout: Timer = field(
-        default_factory=lambda: Timer(time_s = 500e-3)
+        default_factory=lambda: Timer(time_s = 5000e-3)
     )
     heartbeat_timers: dict[int, Timer] = field(
         default_factory=lambda: Timer(time_s = 100e-3)

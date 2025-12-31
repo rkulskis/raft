@@ -27,4 +27,7 @@ class FourSlot:
         self.reading = pair
         index = self.slot[pair]
 
-        return self.data[pair][index]
+        # delete stale data
+        data = self.data[pair][index]
+        self.data[pair][index] = None
+        return data

@@ -15,14 +15,18 @@ from .client_cmd_resp import client_cmd_resp
 def send(self, in_msg, recipient_id):
     match self._handle:
         case self._leader:
+            print('Leader')
             return self.append_entries_req(recipient_id)
         case self._candidate:
+            print('Candidate')
             return self.vote_req()
         case self._follower:
-            match type(in_msg):
+            print(f'Follower got {in_msg}')
+            match in_msg:
                 case AppendEntriesReq():
                     return self.append_entries_req_resp(in_msg)
                 case VoteReq():
+                    print('Follower responding')
                     return self.vote_req_resp(in_msg)
                 
     return None

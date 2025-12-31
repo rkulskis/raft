@@ -7,5 +7,5 @@ class Volatile:
 
 @dataclass    
 class VolatileLeader:
-    next_index: dict[int, int] = field(default_factory=list)
-    match_index: dict[int, int] = field(default_factory=list)
+    next_index: dict[int, int] = field(default_factory=dict)
+    match_index: dict[int, int] = field(default_factory=dict)

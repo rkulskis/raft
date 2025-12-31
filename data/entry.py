@@ -2,5 +2,5 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Entry:
-    term: int
-    command: tuple[str, int]    # e.g. 'a' <- 10
+    term: int = 0
+    command: tuple[str, int] = ("", 0)    # e.g. 'a' <- 10

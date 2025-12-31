@@ -14,7 +14,7 @@ def vote_req_resp(self, request: VoteReq) -> VoteResp:
     if (self.voted_for == 0 or self.voted_for == request.candidate_id) and \
        (request.last_log_term > self.last_log_term or \
         (request.last_log_term == self.last_log_term and \
-         request.last_log_index >= self.last_log_index)):
+         request.prev_log_index >= self.prev_log_index)):
         self.voted_for = request.candidate_id
         
         vote_granted = VoteResp(

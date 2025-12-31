@@ -7,11 +7,12 @@ from .vote_resp_recv import vote_resp_recv
 def recv(self, msg, sender_id):
     if msg.term > self.persistent.current_term:
         self.persistent.current_term = msg.term
+        self.voted_for = 0
         self._handler = self._follower
-        
-    match type(msg):
+    
+    match msg:
         case AppendEntriesResp():
-            append_entries_resp_recv(msg, sender_id)
+            self.append_entries_resp_recv(msg, sender_id)
         case VoteResp():
-            vote_resp_recv(msg, sender_id)            
+            self.vote_resp_recv(msg)            
             

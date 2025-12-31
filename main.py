@@ -37,7 +37,6 @@ class RaftServer(Node):
         
         data = data_dict[self.id]
 
-        print(f'Got: {data}')
         # print(f'self.state = {self.state}')
         self.input_bufs[id].write(data)
         
@@ -51,9 +50,13 @@ class RaftServer(Node):
             if topic_name in self.inputs:
                 continue
 
+            id = int(re.search(r"\d+", topic_name).group())
+
+            if id == self.id:
+                continue
+
             self.get_logger().info(f"Subscribing to {topic_name}")
             
-            id = int(re.search(r"\d+", topic_name).group())
             if id not in self.input_bufs:
                 self.input_bufs[id] = FourSlot()
                 
@@ -72,6 +75,11 @@ class RaftServer(Node):
             in_msgs[in_id] = in_buf.read()
             if not in_msgs[in_id]:
                 continue
+            if in_id not in self.state.volatile_leader.match_index:
+                self.state.volatile_leader.match_index[in_id] = self.state.prev_log_index
+                self.state.volatile_leader.next_index[in_id] = self.state.prev_log_index
+                self.state.raft_cardinality += 1
+            print(f'{self.id} Got: {in_msgs[in_id]}')
             self.state.recv(in_msgs[in_id], in_id)
 
         self.state.tick()
