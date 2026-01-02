@@ -5,7 +5,7 @@
 [[https://raft.github.io/][Raft]] is a consensus algorithm, which is a distributed state machine
 that provides consistency in operations across multiple
 nodes. Consensus algorithms provide fault tolerance by guaranteeing
-progress and consistency int he face of server failures so long as
+progress and consistency in the face of server failures so long as
 some condition is upheld. In the case of raft, this condition is that
 the majority of servers are online. E.g. so long as 3 of our 5 servers
 that comprise the Raft stay online, we can still progress.
@@ -56,15 +56,19 @@ ctree . --color=implicit
 ├── data/
 │   ├── append_entries_req.py       
 │   ├── append_entries_resp.py       
+│   ├── client_cmd_req.py       
+│   ├── client_cmd_resp.py       
+│   ├── entry.py       
 │   ├── vote_req.py       
 │   └── vote_resp.py       
 ├── functions/
-│   ├── n-ary/ # i.e. if forall X, then do Y
+│   ├── n_ary/ # i.e. if forall X, then do Y
 │   │   ├── _candidate.py       
 │   │   ├── _follower.py       
 │   │   ├── _leader.py       
+│   │   ├── client.py       
 │   │   └── server.py       
-│   └── unary/ # for handling messages
+│   └── unary/ # for handling messages; note the alphabetical name-grouping of RPC steps
 │       ├── append_entries_req.py       
 │       ├── append_entries_req_resp.py       
 │       ├── append_entries_resp_recv.py       
@@ -73,13 +77,15 @@ ctree . --color=implicit
 │       ├── client_cmd_resp.py       
 │       ├── client_cmd_resp_recv.py       
 │       ├── recv.py       
-│       ├── req_resp.py       
 │       ├── send.py       
 │       ├── vote_req.py       
 │       ├── vote_req_resp.py       
 │       └── vote_resp_recv.py       
 └── state/ # server state
     ├── persistent.py       
+    ├── raft_server_state.py       
+    ├── state_machine.py       
+    ├── timer.py       
     └── volatile.py       
 #+end_src
 

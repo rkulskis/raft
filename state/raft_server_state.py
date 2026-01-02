@@ -72,7 +72,7 @@ class RaftServerState:
     def _majority(self):
         return int(self.raft_cardinality / 2) + 1
 
-    def tick(self):
+    def compute(self):
         if self.id == CLIENT_ID:
             self.client()
         else:
